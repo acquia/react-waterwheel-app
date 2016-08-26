@@ -1,0 +1,12 @@
+article.full {
+  margin: 0 auto;
+  width: 60%;
+
+  header {
+    .title {
+      font-size: 60px;
+      margin: 0 0 30px 0;
+      color: #000;
+    }
+  }
+}

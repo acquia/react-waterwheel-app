@@ -1,0 +1,25 @@
+.articleFragment {
+  width: 60%;
+  margin: 0 auto;
+  header {
+    a {
+      text-decoration: none;
+      color: #000;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    h1 {
+      margin: 0;
+    }
+  }
+
+  section {
+    margin: 0 0 10px 0;
+    p {
+      font-size: 15px;
+      margin: 0;
+    }
+  }
+}
