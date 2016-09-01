@@ -57,7 +57,7 @@ module.exports = {
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
       },
       {
-        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
+        test: /\.(png|jpg|jpeg|gif|svg)$/,
         loader: 'url',
         query: {
           name: '[hash].[ext]',

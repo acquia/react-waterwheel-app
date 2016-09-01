@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router';
+
 
 const Index = () => (
-  <h1><Link to={'/article'}>Articles</Link></h1>
+  <h1>Some Rest API Demos</h1>
 );
 
 export default Index;
