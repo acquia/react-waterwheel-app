@@ -1,4 +1,6 @@
 import React from 'react';
+import Navigation from '../lib/Navigation.jsx';
+
 import './App.css';
 
 class App extends React.Component {
@@ -8,7 +10,10 @@ class App extends React.Component {
   }
   render() {
     return (
-      <div>{this.props.children}</div>
+      <section className="page">
+        <section className="navigation"><Navigation key="navigation" /></section>
+        <section className="body">{this.props.children}</section>
+      </section>
     );
   }
 }

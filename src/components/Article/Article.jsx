@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import Error from '../Lib/Error.jsx';
 import Placeholder from '../Lib/Placeholder.jsx';
 
 import './Article.css';
@@ -6,33 +7,52 @@ import './Article.css';
 const config = require('../../config');
 const Waterwheel = require('waterwheel');
 
+const ArticleFull = ({ article }) => (
+  <article key={article.id} className="full">
+    <header>
+      <h1 className="title">{article.attributes.title}</h1>
+    </header>
+    <section>
+      <div dangerouslySetInnerHTML={{ __html: article.attributes.body.value }} />
+    </section>
+
+  </article>
+);
+
+ArticleFull.propTypes = {
+  article: PropTypes.object.isRequired
+};
+
 class Article extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drupalData: {}, isLoading: true };
+    this.state = { article: false, isLoading: true };
     this.waterwheel = new Waterwheel(config.waterwheel.base, config.waterwheel.credentials);
   }
-  fetchData(articleID) {
+  fetchSingleArticle(articleID) {
     this.waterwheel.jsonapi.get('node/article', {}, articleID)
-      .then(res => this.setState({ drupalData: res }))
-      .then(() => this.setState({ isLoading: false }));
+      .then(res => this.setState({ article: res }))
+      .then(() => this.setState({ isLoading: false }))
+      .catch(err => {
+        this.setState({ error: true, message: err });
+        this.setState({ isLoading: false });
+      });
   }
   componentWillMount() {
-    this.fetchData(this.props.params.articleID);
+    this.fetchSingleArticle(this.props.params.articleID);
   }
   render() {
-    return this.state.isLoading ? <Placeholder /> : (
-      <article key={this.state.drupalData.data.id} className="full">
-        <header>
-          <h1 className="title">{this.state.drupalData.data.attributes.title}</h1>
-        </header>
-        <section>
-          <div dangerouslySetInnerHTML={{ __html: this.state.drupalData.data.attributes.body.value }} />
-        </section>
-
-      </article>
+    return (
+      this.state.isLoading ? <Placeholder /> :
+        (this.state.error ? <Error /> : <ArticleFull key={this.state.article.data.id} article={this.state.article.data} />)
     );
   }
 }
+
+Article.propTypes = {
+  params: PropTypes.shape({
+    articleID: PropTypes.string.isRequired
+  })
+};
 
 export default Article;

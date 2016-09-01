@@ -1,9 +1,8 @@
 import React from 'react';
+import './Placeholder.css';
 
 const Placeholder = () => (
-  <div>
-    <h2>Things are loading...</h2>
-  </div>
+  <div className="loader">Loading...</div>
 );
 
 export default Placeholder;

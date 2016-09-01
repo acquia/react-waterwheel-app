@@ -1,4 +1,4 @@
-.articleFragment {
+article.articleFragment {
   width: 60%;
   margin: 0 auto;
   header {
@@ -12,13 +12,14 @@
 
     h1 {
       margin: 0;
+      font-size: 2em;
     }
   }
 
   section {
     margin: 0 0 10px 0;
     p {
-      font-size: 15px;
+      font-size: 1em;
       margin: 0;
     }
   }
