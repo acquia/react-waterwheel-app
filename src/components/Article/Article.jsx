@@ -1,37 +1,31 @@
 import React, { PropTypes } from 'react';
+import { browserHistory } from 'react-router';
+
 import Error from '../Lib/Error.jsx';
 import Placeholder from '../Lib/Placeholder.jsx';
-
-import './Article.css';
+import ArticleHelper from './ArticleHelper.jsx';
 
 const config = require('../../config');
 const Waterwheel = require('waterwheel');
 
-const ArticleFull = ({ article }) => (
-  <article key={article.id} className="full">
-    <header>
-      <h1 className="title">{article.attributes.title}</h1>
-    </header>
-    <section>
-      <div dangerouslySetInnerHTML={{ __html: article.attributes.body.value }} />
-    </section>
-
-  </article>
-);
-
-ArticleFull.propTypes = {
-  article: PropTypes.object.isRequired
-};
-
 class Article extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { article: false, isLoading: true };
-    this.waterwheel = new Waterwheel(config.waterwheel.base, config.waterwheel.credentials);
+    this.state = {
+      articleList: false,
+      isLoading: true,
+      inEditUUIDs: new Set()
+    };
+    this.waterwheel = new Waterwheel({ base: config.waterwheel.base, credentials: config.waterwheel.credentials });
+    this.inEditUUIDManagement = this.inEditUUIDManagement.bind(this);
+
+    if (this.props.params.inEditUUIDs) {
+      this.props.params.inEditUUIDs.split(',').forEach(uuid => this.state.inEditUUIDs.add(uuid));
+    }
   }
-  fetchSingleArticle(articleID) {
-    this.waterwheel.jsonapi.get('node/article', {}, articleID)
-      .then(res => this.setState({ article: res }))
+  fetchArticleList() {
+    this.waterwheel.jsonapi.get('node/article', { include: 'uid' })
+      .then(res => this.setState({ articleList: res.data, includes: res.included }))
       .then(() => this.setState({ isLoading: false }))
       .catch(err => {
         this.setState({ error: true, message: err });
@@ -39,19 +33,44 @@ class Article extends React.Component {
       });
   }
   componentWillMount() {
-    this.fetchSingleArticle(this.props.params.articleID);
+    this.fetchArticleList();
+  }
+  inEditUUIDManagement(action, uuid) {
+    console.log('action, uuid', action, uuid);
+    this.state.inEditUUIDs[action](uuid);
+    console.log(this.state.inEditUUIDs, this.state.inEditUUIDs.size);
+    const uuidArray = Array.from(this.state.inEditUUIDs);
+    browserHistory.push(uuidArray.length ? `/article/${uuidArray.join(',')}/edit` : '/article');
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      inEditUUIDs: new Set([].concat(...[(nextProps.params.inEditUUIDs || '').split(',')]))
+    });
   }
   render() {
     return (
       this.state.isLoading ? <Placeholder /> :
-        (this.state.error ? <Error /> : <ArticleFull key={this.state.article.data.id} article={this.state.article.data} />)
+        (this.state.error ?
+          <Error /> :
+          <section className="articleList">
+            {this.state.articleList.map(article => (
+              <ArticleHelper
+                article={article}
+                user={this.state.includes.filter(user => user.data.id === article.relationships.uid.data.id)[0].data}
+                key={article.id}
+                inEditUUIDManagement={this.inEditUUIDManagement}
+                inEditUUIDs={Array.from(this.state.inEditUUIDs)}
+              />
+            ))}
+          </section>
+        )
     );
   }
 }
 
 Article.propTypes = {
   params: PropTypes.shape({
-    articleID: PropTypes.string.isRequired
+    inEditUUIDs: PropTypes.string
   })
 };
 

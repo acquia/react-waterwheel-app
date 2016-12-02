@@ -9,4 +9,8 @@ article.full {
       color: #000;
     }
   }
+
+  input, textarea {
+    display: block;
+  }
 }

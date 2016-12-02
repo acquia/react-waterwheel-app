@@ -57,11 +57,28 @@ module.exports = {
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
       },
       {
-        test: /\.(png|jpg|jpeg|gif|svg)$/,
+        test: /\.(jpg|png|gif)$/,
         loader: 'url',
         query: {
           name: '[hash].[ext]',
           limit: 10000,
+        },
+
+      },
+      {
+        test: /\.(woff|woff2)$/,
+        loader: 'url',
+        options: {
+          name: 'fonts/[hash].[ext]',
+          limit: 5000,
+          mimetype: 'application/font-woff',
+        }
+      },
+      {
+        test: /\.(ttf|eot|svg)$/,
+        loader: 'file',
+        options: {
+          name: 'fonts/[hash].[ext]',
         }
       }
     ]

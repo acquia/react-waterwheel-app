@@ -1,0 +1,17 @@
+section.articleList {
+
+  width: 80%;
+  margin: 0 auto;
+  padding: 0.3em;
+
+  .unpublished {
+    background-color: #ffeae8;
+  }
+  .published {
+    background-color: #fff;
+  }
+
+  .initialCap {
+    text-transform: capitalize;
+  }
+}
