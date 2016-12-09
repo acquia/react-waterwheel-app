@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Form, Input, Col, Row, Button } from 'antd';
+import { Form, Input, Col, Row, Button, notification } from 'antd';
 import { set } from 'lodash';
 import update from 'immutability-helper';
 
@@ -15,16 +15,17 @@ class ArticleEditWrapper extends React.Component {
     super(props);
     this.state = {
       hasLoaded: false,
-      formKeys: {},
-      submitButtonIsDisabled: true
+      formKeys: {}
     };
     this.waterwheel = new Waterwheel({ base: config.waterwheel.base, credentials: config.waterwheel.credentials });
 
     this.handleFormItemChange = this.handleFormItemChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.setSubmitState = this.setSubmitState.bind(this);
+
+    this.get = this.get.bind(this);
   }
-  componentWillMount() {
+  get() {
     Promise.all([
       this.waterwheel.jsonapi.get('taxonomy_term/tags', {}),
       this.waterwheel.jsonapi.get('node/article', { include: 'uid,field_image,field_tags' }, this.props.params.uuid)
@@ -36,9 +37,13 @@ class ArticleEditWrapper extends React.Component {
           availableTags: res[0].data,
           user: res[1].included.filter(include => include.data.type === 'user--user'),
           tags: res[1].included.filter(include => include.data.type === 'taxonomy_term--tags'),
-          tagTIDs: res[1].included.filter(include => include.data.type === 'taxonomy_term--tags').map(tag => tag.data.attributes.tid)
+          tagTIDs: res[1].included.filter(include => include.data.type === 'taxonomy_term--tags').map(tag => tag.data.attributes.tid),
+          submitButtonIsDisabled: true
         });
       });
+  }
+  componentWillMount() {
+    this.get();
   }
   setSubmitState(key, value) {
     const formObject = {};
@@ -88,8 +93,19 @@ class ArticleEditWrapper extends React.Component {
         ) :
         Promise.resolve()
       ))
-      .then(console.log)
-      .catch(console.log);
+      .then(() => {
+        notification.success({
+          message: 'Saved!',
+          description: 'This article has been saved.',
+        });
+        this.get();
+      })
+      .catch(err => {
+        notification.error({
+          message: 'Error!',
+          description: `${err}`,
+        });
+      });
   }
   render() {
     return (
@@ -153,7 +169,6 @@ class ArticleEditWrapper extends React.Component {
               </Row>
             </Col>
             <Col lg={{ span: 4, offset: 1 }}>
-              <p onClick={this.postTagsExample}>hello world</p>
             </Col>
           </Row>
         }
