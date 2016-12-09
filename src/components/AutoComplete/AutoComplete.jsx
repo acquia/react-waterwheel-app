@@ -1,85 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router';
-import moment from 'moment';
+import { Col, Row, TreeSelect, Card } from 'antd';
 
-import { Col, Row, TreeSelect, Table, Menu, Dropdown, Icon } from 'antd';
-import './autocomplete.css';
+import TableListing from './TableListing.jsx';
 
 const config = require('../../config');
 const Waterwheel = require('waterwheel');
-
-const operationsMenu = (article) => {
-  const menu = (
-    <Menu>
-      <Menu.Item key="edit">
-        <Link to={`/edit/${article.id}`}>Edit</Link>
-      </Menu.Item>
-      <Menu.Item key="delete">
-        <Link to={`/delete/${article.id}`}>Delete</Link>
-      </Menu.Item>
-    </Menu>
-  );
-  const operationsButton = (
-    <Dropdown
-      onClick={(e) => console.log('dropdown.button onclick', e)}
-      overlay={menu}
-      trigger={['click']}
-    >
-      <a className="ant-dropdown-link" href="#">
-        Operations <Icon type="down" />
-      </a>
-    </Dropdown>
-  );
-  return operationsButton;
-};
-
-const ArticleTable = ({ articles, users }) => {
-  const dataSource = articles.map(article => ({
-    key: article.id,
-    title: article.attributes.title,
-    contentType: article.type.split('--')[1],
-    updated: moment.unix(article.attributes.changed).format('dddd, MMMM Do YYYY'),
-    author: users.filter(user => user.data.id === article.relationships.uid.data.id)[0].data.attributes.name,
-    operations: operationsMenu(article)
-  }));
-  const columns = [{
-    title: 'TITLE',
-    dataIndex: 'title',
-    key: 'title'
-  }, {
-    title: 'CONTENT TYPE',
-    dataIndex: 'contentType',
-    key: 'contentType'
-  }, {
-    title: 'AUTHOR',
-    dataIndex: 'author',
-    key: 'author'
-  }, {
-    title: 'UPDATE',
-    dataIndex: 'updated',
-    key: 'updated'
-  }, {
-    title: 'OPERATIONS',
-    dataIndex: 'operations',
-    key: 'operations'
-  }];
-  return (<Table
-    dataSource={dataSource}
-    columns={columns}
-    pagination={false}
-  />);
-};
-
 
 class TagAutoComplete extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       hasLoaded: false,
-      values: []
+      values: [],
+      selectedEntityIDs: []
     };
     this.waterwheel = new Waterwheel({ base: config.waterwheel.base, credentials: config.waterwheel.credentials });
     this.onChange = this.onChange.bind(this);
+    this.handleRowSelection = this.handleRowSelection.bind(this);
+    this.handleDeletes = this.handleDeletes.bind(this);
+  }
+  handleRowSelection(selectedRowKeys) {
+    this.setState({ selectedEntityIDs: selectedRowKeys });
   }
   componentWillMount() {
     Promise.all([
@@ -104,30 +45,40 @@ class TagAutoComplete extends React.Component {
       renderedArticles: selectedTags.length ? this.state.availableArticles.filter(article => selectedTags.some(selectedTagId => article.relationships.field_tags.data.map(tag => tag.id).includes(selectedTagId))) : this.state.availableArticles
     });
   }
+  handleDeletes(e) {
+    e.preventDefault();
+    console.log(this.state.selectedEntityIDs);
+  }
   render() {
     return (
-      <Col>
+      <section>
         {this.state.hasLoaded &&
-          <div>
-            <Row>
-              <TreeSelect
-                treeData={this.state.availableTags}
-                style={{ width: 300 }}
-                onChange={this.onChange}
-                multiple={true}
-              />
-            </Row>
-            <Row>
+          <Row>
+            <Col lg={{ span: 4, offset: 0 }}>
+              <Card title="Operations" style={{ width: '100%' }}>
+                <a href="#" onClick={this.handleDeletes}>Delete?</a>
+              </Card>
+              <Card title="Filter by Tags" style={{ width: '100%' }}>
+                <TreeSelect
+                  treeData={this.state.availableTags}
+                  style={{ width: '100%' }}
+                  onChange={this.onChange}
+                  multiple={true}
+                />
+              </Card>
+            </Col>
+            <Col lg={{ span: 18, offset: 1 }}>
               {this.state.renderedArticles.length &&
-                <ArticleTable
+                <TableListing
                   articles={this.state.renderedArticles}
                   users={this.state.users}
+                  handleRowSelection={this.handleRowSelection}
                 />
               }
-            </Row>
-          </div>
+            </Col>
+          </Row>
         }
-      </Col>
+      </section>
     );
   }
 }

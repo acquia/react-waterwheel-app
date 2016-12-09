@@ -1,5 +1,1 @@
-/*@import 'Elemental.css'; */
-
-html, body {
-  padding: 0.2em;
-}
+@import 'https://unpkg.com/antd/dist/antd.min.css';
