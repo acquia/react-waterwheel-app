@@ -1,4 +1,7 @@
 import React, {PropTypes} from 'react';
+import {
+  Link
+} from 'react-router-dom';
 
 const Article = ({article, user}) => (
   <article
@@ -8,7 +11,7 @@ const Article = ({article, user}) => (
     }}>
 
     <h1>{article.attributes.title}</h1>
-    <p>--{user.attributes.name}</p>
+    <p>--<Link to={`/u/${user.id}`}>{user.attributes.name}</Link></p>
     <div>{article.attributes.body.value}</div>
   </article>
 );

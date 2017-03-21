@@ -7,10 +7,12 @@ import {
 } from 'react-router-dom';
 import {
   Root,
+  Body,
   Sidebar,
   SidebarItem
 } from './Components.jsx';
 import Article from './Article.jsx';
+import User from './User.jsx';
 
 import Config from './config';
 
@@ -24,7 +26,7 @@ class Index extends React.Component {
   }
   componentWillMount() {
     this.waterwheel.jsonapi.get('node/article', {include: 'uid'})
-      .then(res => (this.setState({articles: res.data, users: res.included})))
+      .then(res => this.setState({articles: res.data, users: res.included}))
       .catch(console.log);
   }
   render() {
@@ -39,15 +41,27 @@ class Index extends React.Component {
             ))}
           </Sidebar>
           {this.state.articles &&
-            <Route
-              path="/a/:articleID"
-              render={({match}) => {
-                let article = this.state.articles.find(article => article.id === match.params.articleID);
-                return (<Article
-                  article={article}
-                  user={this.state.users.find(user => user.id === article.relationships.uid.data.id)}
-                />);
-              }}/>
+            <Body>
+              <Route
+                path="/a/:articleID"
+                render={({match}) => {
+                  let article = this.state.articles.find(article => article.id === match.params.articleID);
+                  return (<Article
+                    article={article}
+                    user={this.state.users.find(user => user.id === article.relationships.uid.data.id)}
+                  />);
+                }}/>
+              <Route
+                path="/u/:userID"
+                render={({match}) => {
+                  return (<User
+                    user={this.state.users.find(user => user.id === match.params.userID)}
+                    articles={this.state.articles.filter(article => article.relationships.uid.data.id === match.params.userID)}
+                  />);
+                  // return (<p>{match.params.userID}</p>);
+                }}
+              />
+            </Body>
           }
         </Root>
       </Router>

@@ -15,6 +15,13 @@ export const Sidebar = props => (
     }} {...props}/>
 );
 
+export const Body = props => (
+  <div
+    style={{
+      width: '75vw'
+    }} {...props}/>
+);
+
 export const SidebarItem = props => (
   <div
     style={{
