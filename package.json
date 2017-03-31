@@ -1,8 +1,9 @@
 {
-  "name": "deity-react",
+  "name": "react-drupal-waterwheel-app",
   "private": true,
   "version": "1.0.0",
-  "description": "React + Drupal 8 + JSONAPI",
+  "description": "React + Drupal 8 + Waterwheel + JSONAPI",
+  "license" : "MIT",
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --progress --config webpack.config.js --host 0.0.0.0"
   },
