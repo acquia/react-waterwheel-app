@@ -1,25 +1,75 @@
-# Deity-React
+# React + Waterwheel + Drupal 8
+
+## Prerequisites
+
+- Node.js
+- Yarn
+- Drupal 8.x
+  - JSON API
+  - Simple OAuth
+
+## Installation
+
+### JavaScript
+
+Clone this repository.
 
 ```
-npm i
+yarn install
 ```
 
-Create a config file, `src/config.js`, replacing the values with your own.
+### Drupal
+
+Clone or download Drupal 8.x, _this was tested with Drupal 8.4.x checked out from head_.
+
+```
+composer require drupal/jsonapi
+composer require drupal/simple_oauth:2.0-rc2
+```
+
+Ensure that your `services.yml` file is loaded and that CORS is enabled.
+
+```
+cors.config:
+  enabled: true
+  # Specify allowed headers, like 'x-allowed-header'.
+  allowedHeaders: ['*']
+  # Specify allowed request methods, specify ['*'] to allow all possible ones.
+  allowedMethods: ['*']
+  # Configure requests allowed from specific origins.
+  allowedOrigins: ['*']
+  # Sets the Access-Control-Expose-Headers header.
+  exposedHeaders: true
+  # Sets the Access-Control-Max-Age header.
+  maxAge: false
+  # Sets the Access-Control-Allow-Credentials header.
+  supportsCredentials: true
+ ```
+
+Visit `admin/config/people/simple_oauth` and ensure your OAuth settings are correct.
+
+Vist `admin/config/people/simple_oauth/oauth2_client` and create a client for your React application.
+
+Create a config file located at `src/config.js`, replacing the values with the ones you created earlier.
 
 ```js
 export default {
   base: 'http://drupal-host-name',
   oauth: {
-    grant_type: 'grant-type', // eslint-disable-line camelcase
-    client_id: 'client-i', // eslint-disable-line camelcase
-    client_secret: 'client-secret', // eslint-disable-line camelcase
-    username: 'username',
-    password: 'password',
-    scope: 'scope'
+    grant_type: 'password',
+    client_id: 'client-id',  // YOUR CLIENT ID
+    client_secret: 'client-secret', // YOUR CLIENT SECRET
+    username: 'username', // USERNAME
+    password: 'password', // PASSWORD
+    scope: 'administrator'
   }
 };
 ```
 
+## Running
+
 ```
-npm start
+yarn run start
 ```
+
+Visit http://localhost:8080

@@ -58,7 +58,6 @@ class Index extends React.Component {
                     user={this.state.users.find(user => user.id === match.params.userID)}
                     articles={this.state.articles.filter(article => article.relationships.uid.data.id === match.params.userID)}
                   />);
-                  // return (<p>{match.params.userID}</p>);
                 }}
               />
             </Body>
