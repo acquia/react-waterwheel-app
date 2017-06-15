@@ -1,8 +1,9 @@
 {
-  "name": "deity-react",
+  "name": "react-drupal-waterwheel-app",
   "private": true,
   "version": "1.0.0",
-  "description": "React + Drupal 8 + JSONAPI",
+  "description": "React + Drupal 8 + Waterwheel + JSONAPI",
+  "license": "MIT",
   "scripts": {
     "start": "./node_modules/.bin/webpack-dev-server --progress --config webpack.config.js --host 0.0.0.0"
   },
@@ -10,31 +11,36 @@
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.4.0",
-    "babel-plugin-syntax-jsx": "^6.18.0",
-    "babel-preset-latest": "^6.24.0",
-    "babel-preset-react": "^6.23.0",
-    "babel-preset-stage-0": "^6.22.0",
-    "eslint-config-xo-react": "^0.10.0",
-    "eslint-plugin-react": "^6.10.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.5.1",
+    "eslint-config-xo-react": "^0.12.0",
+    "eslint-plugin-react": "^7.0.1",
     "html-webpack-plugin": "^2.28.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.1",
-    "xo": "^0.17.1"
+    "xo": "^0.18.2"
   },
   "dependencies": {
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-router-dom": "^4.0.0",
-    "waterwheel": "^1.3.0"
+    "waterwheel": "^1.3.2"
   },
   "babel": {
-    "presets": [
-      "react",
-      "latest",
-      "stage-0"
-    ],
     "plugins": [
-      "syntax-jsx"
+      "transform-react-jsx"
+    ],
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": [
+              "last 2 versions"
+            ]
+          }
+        }
+      ]
     ]
   },
   "xo": {
@@ -42,17 +48,6 @@
     "ignores": [
       "webpack.config.js"
     ],
-    "extends": "xo-react",
-    "envs": [
-      "browser",
-      "node"
-    ],
-    "rules": {
-      "unicorn/filename-case": 0,
-      "react/no-unused-prop-types": 0,
-      "react/forbid-component-props": 0,
-      "react/jsx-no-bind": 0,
-      "react/jsx-closing-bracket-location": 0
-    }
+    "extends": "xo-react"
   }
 }
