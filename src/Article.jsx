@@ -13,7 +13,9 @@ const Article = ({article, user}) => (
 
     <h1>{article.attributes.title}</h1>
     {user && (<p>--<Link to={`/u/${user.id}`}>{user.attributes.name}</Link></p>)}
-    <div>{article.attributes.field_body.value}</div>
+    <div>{article.attributes.field_body ?
+      article.attributes.field_body.value :
+      article.attributes.body.value}</div>
   </article>
 );
 
