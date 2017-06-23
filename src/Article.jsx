@@ -12,8 +12,8 @@ const Article = ({article, user}) => (
     }}>
 
     <h1>{article.attributes.title}</h1>
-    <p>--<Link to={`/u/${user.id}`}>{user.attributes.name}</Link></p>
-    <div>{article.attributes.body.value}</div>
+    {user && (<p>--<Link to={`/u/${user.id}`}>{user.attributes.name}</Link></p>)}
+    <div>{article.attributes.field_body.value}</div>
   </article>
 );
 
