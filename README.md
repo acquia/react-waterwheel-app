@@ -1,4 +1,10 @@
-# React + Waterwheel + Drupal 8
+![Waterwheel Ecosystem](https://raw.githubusercontent.com/acquia/waterwheel-js/assets/waterwheel.png)
+
+# React + Waterwheel.js + Drupal 8
+
+A boilerplate React application powered by Drupal 8 and Waterwheel.js.
+
+---
 
 ## Prerequisites
 
